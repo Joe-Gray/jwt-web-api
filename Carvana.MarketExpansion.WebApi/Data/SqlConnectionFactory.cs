@@ -4,7 +4,7 @@ namespace Carvana.MarketExpansion.WebApi.Data
 {
     public class SqlConnectionFactory : ISqlConnectionFactory
     {
-        private string connectionString = "Server=.;Database=aspnet-market_web_dev;Trusted_Connection=True;";
+        private string connectionString = "Data Source=carvanadev.database.windows.net;Initial Catalog=CarvanaOLTP;User ID=SVC-Application-DEV;Password=Carvana!1;";
 
         public SqlConnection GetOpenSqlConnection()
         {

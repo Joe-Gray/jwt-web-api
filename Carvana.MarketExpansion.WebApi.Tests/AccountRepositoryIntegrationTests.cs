@@ -8,7 +8,7 @@ namespace Carvana.MarketExpansion.WebApi.Tests
     {
         private string _testEmail = "test@test.com";
 
-        //[TestMethod]
+        [TestMethod]
         public void Should_Get_User_By_Email()
         {
             IAccountRepository accountRepository = new AccountRepository(new SqlConnectionFactory());
@@ -18,7 +18,7 @@ namespace Carvana.MarketExpansion.WebApi.Tests
             Assert.AreEqual(_testEmail, user.Email);
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void Should_Get_PasswordHash_By_Email()
         {
             IAccountRepository accountRepository = new AccountRepository(new SqlConnectionFactory());
