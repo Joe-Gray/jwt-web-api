@@ -145,7 +145,10 @@
     <Compile Include="Models\JwtPayload.cs" />
     <Compile Include="Models\UserCredentials.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AccessTokenService.cs" />
     <Compile Include="Services\AccountService.cs" />
+    <Compile Include="Services\IAccessTokenService.cs" />
+    <Compile Include="Services\IRefreshTokenService.cs" />
     <Compile Include="Services\JwtEncodingService.cs" />
     <Compile Include="Services\IAccountService.cs" />
     <Compile Include="Services\IJwtEncodingService.cs" />
@@ -153,6 +156,7 @@
     <Compile Include="Services\IPasswordService.cs" />
     <Compile Include="Services\JwtService.cs" />
     <Compile Include="Services\PasswordService.cs" />
+    <Compile Include="Services\RefreshTokenService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

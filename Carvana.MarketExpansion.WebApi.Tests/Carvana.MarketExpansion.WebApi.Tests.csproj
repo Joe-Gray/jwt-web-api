@@ -85,7 +85,7 @@
   <ItemGroup>
     <Compile Include="AccountRepositoryIntegrationTests.cs" />
     <Compile Include="EncodingServiceTests.cs" />
-    <Compile Include="JwtServiceTests.cs" />
+    <Compile Include="AccessTokenServiceTests.cs" />
     <Compile Include="PasswordServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

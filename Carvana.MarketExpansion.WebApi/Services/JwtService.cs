@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Security.Cryptography;
-using Carvana.MarketExpansion.WebApi.Data;
 using Carvana.MarketExpansion.WebApi.Models;
 
 namespace Carvana.MarketExpansion.WebApi.Services
@@ -8,42 +7,63 @@ namespace Carvana.MarketExpansion.WebApi.Services
     public class JwtService : IJwtService
     {
         private readonly string _secret = "OurLittleSecret";
-        private readonly int _accessTokenLifespanMinutes = 20;
-        private readonly int _refreshTokenLifespanDays = 14;
-        private readonly DateTime _epochTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        private readonly IJwtEncodingService _encodingService;
-        private readonly IAccountRepository _accountRepository;
+        private readonly IJwtEncodingService _jwtEncodingService;
 
-        public JwtService(
-            IJwtEncodingService encodingService, 
-            IAccountRepository accountRepository)
+        public JwtService(IJwtEncodingService jwtEncodingService)
         {
-            _encodingService = encodingService;
-            _accountRepository = accountRepository;
+            _jwtEncodingService = jwtEncodingService;
         }
 
-        public string CreateAccessToken(string email)
+        public DateTime EpochTime => new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+        public string CreateToken(JwtPayload jwtPayload)
         {
             var header = CreateEncodedHeader();
-            var user = _accountRepository.GetUserByUserName(email);
-            var payload = CreateEncodedPayload(user);
-            var headerAndPayload = $"{header}.{payload}";
+            var encodedPayload = _jwtEncodingService.EncodeObject(jwtPayload);
+            var headerAndPayload = $"{header}.{encodedPayload}";
             var signature = GenerateSignature(headerAndPayload);
             var token = $"{headerAndPayload}.{signature}";
             return token;
         }
+        
+        public JwtPayload CreateJwtPayload(User user, DateTime issuedAt, int tokenExpiration, string tokenType)
+        {
+            var iat = GetTotalSecondsSinceEpochTime(issuedAt);
 
-        //public string CreateRefreshToken(string email)
-        //{
-        //    var header = CreateEncodedHeader();
-        //    var user = _accountRepository.GetUserByUserName(email);
-        //    var payload = CreateEncodedPayload(user);
-        //    var headerAndPayload = $"{header}.{payload}";
-        //    var signature = GenerateSignature(headerAndPayload);
-        //    var token = $"{headerAndPayload}.{signature}";
-        //    return token;
-        //}
+            var payload = new JwtPayload
+            {
+                aud = "market-expansion",
+                exp = tokenExpiration.ToString(),
+                iat = iat.ToString(),
+                iss = "market-expansion-authorization",
+                nbf = iat.ToString(),
+                jti = Guid.NewGuid().ToString().ToLower(),
+                sub = user.Email,
+                userEmail = user.Email,
+                userId = user.Id,
+                tokenType = tokenType
+            };
 
+            return payload;
+        }
+
+        private string CreateEncodedHeader()
+        {
+            var header = new JwtHeader { typ = "JWT", alg = "HS256" };
+            var encoded = _jwtEncodingService.EncodeObject(header);
+            return encoded;
+        }
+
+        private string GenerateSignature(string headerAndPayload)
+        {
+            var secretBytes = System.Text.Encoding.UTF8.GetBytes(_secret);
+            var sha = new HMACSHA256(secretBytes);
+            var bytesToHash = System.Text.Encoding.UTF8.GetBytes(headerAndPayload);
+            var hash = sha.ComputeHash(bytesToHash);
+            var signature = _jwtEncodingService.EncodeBytes(hash);
+            return signature;
+        }
+        
         public bool DoesSignatureMatch(string jwToken)
         {
             var segments = jwToken.Split('.');
@@ -60,82 +80,23 @@ namespace Carvana.MarketExpansion.WebApi.Services
             var jwtPayload = DecodePayload(segments[1]);
             return jwtPayload;
         }
-
-        private string CreateEncodedHeader()
-        {
-            var header = new JwtHeader {typ = "JWT", alg = "HS256"};
-            var encoded = _encodingService.EncodeObject(header);
-            return encoded;
-        }
-
+        
         private JwtHeader DecodeHeader(string encodedHeader)
         {
-            var jwtHeader = _encodingService.DecodeObject<JwtHeader>(encodedHeader);
+            var jwtHeader = _jwtEncodingService.DecodeObject<JwtHeader>(encodedHeader);
             return jwtHeader;
         }
-
-        private string CreateEncodedPayload(User user)
-        {
-            var currentUtcTime = DateTime.UtcNow;
-            var iat = GetTotalSecondsSinceEpochTime(currentUtcTime);
-            var exp = GetAccessTokenExpirationInSeconds(currentUtcTime);
-
-            var payload = new JwtPayload
-            {
-                aud = "market-expansion",
-                exp = exp.ToString(),
-                iat = iat.ToString(),
-                iss = "market-expansion-authorization",
-                nbf = iat.ToString(),
-                jti = Guid.NewGuid().ToString().ToLower(),
-                sub = user.Email,
-                userEmail = user.Email,
-                userId = user.Id,
-                userSecurityClaims = user.SecurityClaims
-            };
-
-            var encoded = _encodingService.EncodeObject(payload);
-            return encoded;
-        }
-
+        
         private int GetTotalSecondsSinceEpochTime(DateTime currentUtcTime)
         {
-            var totalSecondsSinceEpochTime = (int)currentUtcTime.Subtract(_epochTime).TotalSeconds;
+            var totalSecondsSinceEpochTime = (int)currentUtcTime.Subtract(EpochTime).TotalSeconds;
             return totalSecondsSinceEpochTime;
         }
 
-        private int GetAccessTokenExpirationInSeconds(DateTime currentUtcTime)
-        {
-            var expirationInSeconds =
-                (int) currentUtcTime.AddMinutes(_accessTokenLifespanMinutes).Subtract(_epochTime).TotalSeconds;
-
-            return expirationInSeconds;
-        }
-
-        private int GetRefreshTokenExpirationInSeconds(DateTime currentUtcTime)
-        {
-            var expirationInSeconds =
-                (int)currentUtcTime.AddDays(_refreshTokenLifespanDays).Subtract(_epochTime).TotalSeconds;
-
-            return expirationInSeconds;
-        }
-
-        private DateTime EpochTime => new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-
         private JwtPayload DecodePayload(string encodedPayload)
         {
-            var jwtPayload = _encodingService.DecodeObject<JwtPayload>(encodedPayload);
+            var jwtPayload = _jwtEncodingService.DecodeObject<JwtPayload>(encodedPayload);
             return jwtPayload;
-        }
-
-        private string GenerateSignature(string headerAndPayload)
-        {
-            var secretBytes = System.Text.Encoding.UTF8.GetBytes(_secret);
-            var sha = new HMACSHA256(secretBytes);
-            var bytesToHash = System.Text.Encoding.UTF8.GetBytes(headerAndPayload);
-            var hash = sha.ComputeHash(bytesToHash);
-            var signature = _encodingService.EncodeBytes(hash);
-            return signature;
         }
     }
 }

@@ -30,6 +30,8 @@ namespace Carvana.MarketExpansion.WebApi
             container.Register<IAccountRepository, AccountRepository>(Lifestyle.Transient);
             container.Register<IJwtEncodingService, JwtEncodingService>(Lifestyle.Transient);
             container.Register<IJwtService, JwtService>(Lifestyle.Transient);
+            container.Register<IAccessTokenService, AccessTokenService>(Lifestyle.Transient);
+            container.Register<IRefreshTokenService, RefreshTokenService>(Lifestyle.Transient);
             container.Register<IPasswordService, PasswordService>(Lifestyle.Transient);
             container.Register<IAccountService, AccountService>(Lifestyle.Transient);
 

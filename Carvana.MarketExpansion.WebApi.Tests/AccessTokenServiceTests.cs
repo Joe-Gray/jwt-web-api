@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 namespace Carvana.MarketExpansion.WebApi.Tests
 {
     [TestClass]
-    public class JwtServiceTests
+    public class AccessTokenServiceTests
     {
         [TestMethod]
         public void Encode_And_Validate_JwToken()
@@ -20,9 +20,10 @@ namespace Carvana.MarketExpansion.WebApi.Tests
             A.CallTo<User>(() => accountRepository.GetUserByUserName("gbsjoe@gmail.com"))
                 .Returns(user);
 
-            IJwtService jwtService = new JwtService(new JwtEncodingService(), accountRepository);
+            IJwtService jwtService = new JwtService(new JwtEncodingService());
+            IAccessTokenService accessTokenService = new AccessTokenService(jwtService, accountRepository);
 
-            var token = jwtService.CreateAccessToken("gbsjoe@gmail.com");
+            var token = accessTokenService.CreateToken("gbsjoe@gmail.com");
             var isValid = jwtService.DoesSignatureMatch(token);
 
             Assert.IsTrue(isValid);
@@ -37,9 +38,10 @@ namespace Carvana.MarketExpansion.WebApi.Tests
             A.CallTo<User>(() => accountRepository.GetUserByUserName("gbsjoe@gmail.com"))
                 .Returns(user);
 
-            IJwtService jwtService = new JwtService(new JwtEncodingService(), accountRepository);
+            IJwtService jwtService = new JwtService(new JwtEncodingService());
+            IAccessTokenService accessTokenService = new AccessTokenService(jwtService, accountRepository);
 
-            var token = jwtService.CreateAccessToken("gbsjoe@gmail.com");
+            var token = accessTokenService.CreateToken("gbsjoe@gmail.com");
             var decodedUser = jwtService.GetJwtPayload(token);
 
             var userJson = JsonConvert.SerializeObject(user.SecurityClaims);

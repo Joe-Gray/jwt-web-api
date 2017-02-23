@@ -14,5 +14,6 @@ namespace Carvana.MarketExpansion.WebApi.Models
         public string userEmail { get; set; }
         public string userId { get; set; }
         public List<string> userSecurityClaims { get; set; }
+        public string tokenType { get; set; }
     }
 }
