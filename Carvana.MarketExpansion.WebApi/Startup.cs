@@ -28,7 +28,7 @@ namespace Carvana.MarketExpansion.WebApi
 
             container.Register<ISqlConnectionFactory, SqlConnectionFactory>(Lifestyle.Transient);
             container.Register<IAccountRepository, AccountRepository>(Lifestyle.Transient);
-            container.Register<IEncodingService, EncodingService>(Lifestyle.Transient);
+            container.Register<IJwtEncodingService, JwtEncodingService>(Lifestyle.Transient);
             container.Register<IJwtService, JwtService>(Lifestyle.Transient);
             container.Register<IPasswordService, PasswordService>(Lifestyle.Transient);
             container.Register<IAccountService, AccountService>(Lifestyle.Transient);
