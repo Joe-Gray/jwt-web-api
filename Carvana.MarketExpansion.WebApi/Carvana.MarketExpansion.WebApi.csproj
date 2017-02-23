@@ -135,10 +135,6 @@
     <Compile Include="Attributes\RequireHttpsAttribute.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Data\AccountRepository.cs" />
-    <Compile Include="Data\AspNetRole.cs" />
-    <Compile Include="Data\AspNetRoleClaim.cs" />
-    <Compile Include="Data\AspNetUser.cs" />
-    <Compile Include="Data\AspNetUserLogin.cs" />
     <Compile Include="Data\IAccountRepository.cs" />
     <Compile Include="Data\ISqlConnectionFactory.cs" />
     <Compile Include="Data\SqlConnectionFactory.cs" />
