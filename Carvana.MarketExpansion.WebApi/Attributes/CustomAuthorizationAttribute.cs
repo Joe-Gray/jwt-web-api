@@ -40,11 +40,20 @@ namespace Carvana.MarketExpansion.WebApi.Attributes
 
             var isTokenExpired = _jwtService.IsTokenExpired(authToken);
 
-            if (!isTokenExpired)
+            if (isTokenExpired)
             {
                 actionContext.Response = actionContext.Request.CreateErrorResponse(
                     HttpStatusCode.Unauthorized,
                     "Authorization Token is Expired");
+            }
+
+            var isTokenRevoked = _jwtService.IsTokenRevoked(authToken);
+
+            if (isTokenRevoked)
+            {
+                actionContext.Response = actionContext.Request.CreateErrorResponse(
+                    HttpStatusCode.Unauthorized,
+                    "Not Authorized");
             }
 
             var jwtPayload = _jwtService.GetJwtPayload(authToken);

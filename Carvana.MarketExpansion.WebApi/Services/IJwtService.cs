@@ -10,6 +10,7 @@ namespace Carvana.MarketExpansion.WebApi.Services
         JwtPayload CreateJwtPayload(User user, DateTime issuedAt, int tokenExpiration, string tokenType);
         bool IsSignatureValid(string jwToken);
         bool IsTokenExpired(string jwToken);
+        bool IsTokenRevoked(string jwToken);
         JwtPayload GetJwtPayload(string jwToken);
     }
 }

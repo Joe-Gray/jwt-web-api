@@ -74,7 +74,14 @@ namespace Carvana.MarketExpansion.WebApi.Services
             return signatureMatches;
         }
 
+        // TODO: implement me
         public bool IsTokenExpired(string jwToken)
+        {
+            return false;
+        }
+
+        // TODO: implement me
+        public bool IsTokenRevoked(string jwToken)
         {
             return false;
         }
