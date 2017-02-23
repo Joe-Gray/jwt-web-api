@@ -138,6 +138,7 @@
     <Compile Include="Data\IAccountRepository.cs" />
     <Compile Include="Data\ISqlConnectionFactory.cs" />
     <Compile Include="Data\SqlConnectionFactory.cs" />
+    <Compile Include="Exceptions\UserAlreadyRegisteredException.cs" />
     <Compile Include="Exceptions\InvalidCredentialsException.cs" />
     <Compile Include="Models\LoginTokens.cs" />
     <Compile Include="Models\User.cs" />

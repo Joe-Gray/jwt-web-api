@@ -17,7 +17,7 @@ namespace Carvana.MarketExpansion.WebApi.Tests
             var user = BuildUser();
 
             var accountRepository = A.Fake<IAccountRepository>();
-            A.CallTo<User>(() => accountRepository.GetUserByUserName("gbsjoe@gmail.com"))
+            A.CallTo<User>(() => accountRepository.GetUserByEmail("gbsjoe@gmail.com"))
                 .Returns(user);
 
             IJwtService jwtService = new JwtService(new JwtEncodingService());
@@ -35,7 +35,7 @@ namespace Carvana.MarketExpansion.WebApi.Tests
             var user = BuildUser();
 
             var accountRepository = A.Fake<IAccountRepository>();
-            A.CallTo<User>(() => accountRepository.GetUserByUserName("gbsjoe@gmail.com"))
+            A.CallTo<User>(() => accountRepository.GetUserByEmail("gbsjoe@gmail.com"))
                 .Returns(user);
 
             IJwtService jwtService = new JwtService(new JwtEncodingService());
@@ -56,8 +56,6 @@ namespace Carvana.MarketExpansion.WebApi.Tests
             {
                 Email = "gbsjoe@gmail.com",
                 Id = "123456789",
-                LoginProvider = "Custom",
-                ProviderKey = "987654321",
                 SecurityClaims = new List<string> { "ViewMarkets", "AddMarkets" }
             };
         }

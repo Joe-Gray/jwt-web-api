@@ -20,7 +20,7 @@ namespace Carvana.MarketExpansion.WebApi.Services
 
         public string CreateToken(string email)
         {
-            var user = _accountRepository.GetUserByUserName(email);
+            var user = _accountRepository.GetUserByEmail(email);
             return CreateToken(user);
         }
 

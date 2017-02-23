@@ -13,22 +13,22 @@ namespace Carvana.MarketExpansion.WebApi.Data
             _sqlConnectionFactory = sqlConnectionFactory;
         }
 
-        public User GetUserByUserName(string userName)
+        public User GetUserByEmail(string email)
         {
             using (var conn = _sqlConnectionFactory.GetOpenSqlConnection())
             {
-                var user = conn.QueryFirstOrDefault<User>("SELECT u.Id, u.Email, u.PasswordHash, l.LoginProvider, l.ProviderKey FROM dbo.AspNetUsers u JOIN dbo.AspNetUserLogins l ON l.UserId = u.Id WHERE u.Email = @Email", new {Email = userName});
-                var claimValues = conn.Query<string>("SELECT c.ClaimValue FROM dbo.AspNetUsers u JOIN dbo.AspNetUserLogins l ON l.UserId = u.Id JOIN dbo.AspNetUserRoles ur ON ur.UserId = u.Id JOIN dbo.AspNetRoles r ON r.Id = ur.RoleId JOIN dbo.AspNetRoleClaims c ON c.RoleId = r.Id WHERE u.Email = @Email", new { Email = userName });
+                var user = conn.QueryFirstOrDefault<User>("SELECT Id, Email, PasswordHash FROM dbo.MarketSecurityUser WHERE Email = @Email", new {Email = email});
+                var claimValues = conn.Query<string>("SELECT c.Name FROM dbo.MarketSecurityUser u JOIN dbo.MarketSecurityUserRole ur ON ur.MarketSecurityUserId = u.Id JOIN dbo.MarketSecurityRole r ON r.Id = ur.MarketSecurityRoleId JOIN dbo.MarketSecurityClaim c ON c.MarketSecurityRoleId = r.Id WHERE u.Email = @Email", new { Email = email });
                 user.SecurityClaims = new List<string>(claimValues);
                 return user;
             }
         }
 
-        public string GetUserPasswordHashByUserName(string userName)
+        public string GetUserPasswordHashByEmail(string email)
         {
             using (var conn = _sqlConnectionFactory.GetOpenSqlConnection())
             {
-                var passwordHash = conn.QueryFirstOrDefault<string>("SELECT PasswordHash FROM dbo.AspNetUsers WHERE Email = @Email", new { Email = userName });
+                var passwordHash = conn.QueryFirstOrDefault<string>("SELECT PasswordHash FROM dbo.MarketSecurityUser WHERE Email = @Email", new { Email = email });
                 return passwordHash;
             }
         }

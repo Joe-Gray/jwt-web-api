@@ -1,34 +1,44 @@
-﻿IF NOT EXISTS(SELECT 1 FROM AspNetRoles WHERE Name = 'Admin')
+﻿IF NOT EXISTS(SELECT 1 FROM MarketSecurityRole WHERE Name = 'Admin')
 BEGIN
-	INSERT INTO AspNetRoles(Id, Name) VALUES ('7D1AD8A9-7C80-484C-8F69-962C96B2308B', 'Admin')
+	INSERT INTO MarketSecurityRole(Id, Name) VALUES ('7D1AD8A9-7C80-484C-8F69-962C96B2308B', 'Admin')
 END
 
-IF NOT EXISTS(SELECT 1 FROM AspNetRoleClaims WHERE ClaimValue = 'Admin')
+IF NOT EXISTS(SELECT 1 FROM MarketSecurityClaim WHERE Name = 'Admin')
 BEGIN
-	INSERT INTO AspNetRoleClaims(ClaimType, ClaimValue, RoleId) VALUES ('Security', 'Admin', '7D1AD8A9-7C80-484C-8F69-962C96B2308B')
+	INSERT INTO MarketSecurityClaim(Id, Name, MarketSecurityRoleId) VALUES ('978898FD-DF36-442E-B33A-CFA31B325178', 'Admin', '7D1AD8A9-7C80-484C-8F69-962C96B2308B')
 END
 
-IF NOT EXISTS(SELECT 1 FROM AspNetRoles WHERE Name = 'ManageMarket')
+IF NOT EXISTS(SELECT 1 FROM MarketSecurityRole WHERE Name = 'ManageMarket')
 BEGIN
-	INSERT INTO AspNetRoles(Id, Name) VALUES ('69CE158E-0850-49B6-8F69-13434BD80AAD', 'ManageMarket')
+	INSERT INTO MarketSecurityRole(Id, Name) VALUES ('69CE158E-0850-49B6-8F69-13434BD80AAD', 'ManageMarket')
 END
 
-IF NOT EXISTS(SELECT 1 FROM AspNetRoleClaims WHERE ClaimValue = 'AddMarket')
+IF NOT EXISTS(SELECT 1 FROM MarketSecurityClaim WHERE Name = 'AddMarket')
 BEGIN
-	INSERT INTO AspNetRoleClaims(ClaimType, ClaimValue, RoleId) VALUES ('Security', 'AddMarket', '69CE158E-0850-49B6-8F69-13434BD80AAD')
+	INSERT INTO MarketSecurityClaim(Id, Name, MarketSecurityRoleId) VALUES ('BA8076A3-6EFA-4CDD-93FF-1156F3456803', 'AddMarket', '69CE158E-0850-49B6-8F69-13434BD80AAD')
 END
 
-IF NOT EXISTS(SELECT 1 FROM AspNetRoleClaims WHERE ClaimValue = 'EditMarket')
+IF NOT EXISTS(SELECT 1 FROM MarketSecurityClaim WHERE Name = 'EditMarket')
 BEGIN
-	INSERT INTO AspNetRoleClaims(ClaimType, ClaimValue, RoleId) VALUES ('Security', 'EditMarket', '69CE158E-0850-49B6-8F69-13434BD80AAD')
+	INSERT INTO MarketSecurityClaim(Id, Name, MarketSecurityRoleId) VALUES ('9E4E7F4C-45DA-4602-9682-1635216D989C', 'EditMarket', '69CE158E-0850-49B6-8F69-13434BD80AAD')
 END
 
-IF NOT EXISTS(SELECT 1 FROM AspNetRoleClaims WHERE ClaimValue = 'DeleteMarket')
+IF NOT EXISTS(SELECT 1 FROM MarketSecurityClaim WHERE Name = 'DeleteMarket')
 BEGIN
-	INSERT INTO AspNetRoleClaims(ClaimType, ClaimValue, RoleId) VALUES ('Security', 'DeleteMarket', '69CE158E-0850-49B6-8F69-13434BD80AAD')
+	INSERT INTO MarketSecurityClaim(Id, Name, MarketSecurityRoleId) VALUES ('C134E23F-B33F-491D-95F9-929E2D94DA57', 'DeleteMarket', '69CE158E-0850-49B6-8F69-13434BD80AAD')
 END
 
-IF NOT EXISTS(SELECT 1 FROM AspNetRoleClaims WHERE ClaimValue = 'ViewMarket')
+IF NOT EXISTS(SELECT 1 FROM MarketSecurityClaim WHERE Name = 'ViewMarket')
 BEGIN
-	INSERT INTO AspNetRoleClaims(ClaimType, ClaimValue, RoleId) VALUES ('Security', 'ViewMarket', '69CE158E-0850-49B6-8F69-13434BD80AAD')
+	INSERT INTO MarketSecurityClaim(Id, Name, MarketSecurityRoleId) VALUES ('CED9FC91-B19A-42D1-A463-3EB05DE9F502', 'ViewMarket', '69CE158E-0850-49B6-8F69-13434BD80AAD')
+END
+
+IF NOT EXISTS(SELECT 1 FROM MarketSecurityUser WHERE Email = 'test@test.com')
+BEGIN
+	INSERT INTO MarketSecurityUser(Id, Email, PasswordHash) VALUES ('0279C12B-EBA9-49F6-AF26-030AC2972B3E', 'test@test.com', 'x567edfr5474545ffgfg')
+END
+
+IF NOT EXISTS(SELECT 1 FROM MarketSecurityUserRole WHERE MarketSecurityUserId = '0279C12B-EBA9-49F6-AF26-030AC2972B3E')
+BEGIN
+	INSERT INTO MarketSecurityUserRole(MarketSecurityUserId, MarketSecurityRoleId) SELECT '0279C12B-EBA9-49F6-AF26-030AC2972B3E', Id FROM MarketSecurityRole
 END

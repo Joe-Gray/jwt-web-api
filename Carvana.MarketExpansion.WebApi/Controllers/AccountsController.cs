@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Web.Http;
 using Carvana.MarketExpansion.WebApi.Data;
 using Carvana.MarketExpansion.WebApi.Exceptions;
@@ -39,7 +40,15 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
                 return BadRequest();
             }
 
-            //_locationRepository.Insert(location);
+            try
+            {
+                _accountService.Register(userCredentials);
+            }
+            catch (InvalidCredentialsException)
+            {
+                return Content(HttpStatusCode.Unauthorized, new { error = "Invalid Credentials" });
+            }
+
 
             return Created("", new {});
         }
@@ -53,7 +62,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
                 return BadRequest();
             }
 
-            var passwordHash = _accountRepository.GetUserPasswordHashByUserName(userCredentials.Email);
+            var passwordHash = _accountRepository.GetUserPasswordHashByEmail(userCredentials.Email);
 
             if (string.IsNullOrWhiteSpace(passwordHash))
             {

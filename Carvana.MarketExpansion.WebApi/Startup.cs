@@ -25,6 +25,7 @@ namespace Carvana.MarketExpansion.WebApi
         {
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new WebApiRequestLifestyle();
+            container.Options.DefaultLifestyle = Lifestyle.Transient;
 
             container.Register<ISqlConnectionFactory, SqlConnectionFactory>(Lifestyle.Transient);
             container.Register<IAccountRepository, AccountRepository>(Lifestyle.Transient);

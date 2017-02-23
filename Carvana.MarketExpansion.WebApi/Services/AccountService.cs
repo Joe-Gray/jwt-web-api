@@ -7,20 +7,17 @@ namespace Carvana.MarketExpansion.WebApi.Services
     public class AccountService : IAccountService
     {
         private readonly IPasswordService _passwordService;
-        private readonly IJwtService _jwtService;
         private readonly IAccountRepository _accountRepository;
         private readonly IAccessTokenService _accessTokenService;
         private readonly IRefreshTokenService _refreshTokenService;
 
         public AccountService(
             IPasswordService passwordService, 
-            IJwtService jwtService, 
             IAccountRepository accountRepository, 
             IAccessTokenService accessTokenService, 
             IRefreshTokenService refreshTokenService)
         {
             _passwordService = passwordService;
-            _jwtService = jwtService;
             _accountRepository = accountRepository;
             _accessTokenService = accessTokenService;
             _refreshTokenService = refreshTokenService;
@@ -28,6 +25,15 @@ namespace Carvana.MarketExpansion.WebApi.Services
 
         public string Register(UserCredentials userCredentials)
         {
+            GuardAgainstMissingCredentials(userCredentials);
+
+            var user = _accountRepository.GetUserByEmail(userCredentials.Email);
+
+            if (user != null)
+            {
+                throw new UserAlreadyRegisteredException();
+            }
+
             // Look up user by credentials
             // If exists:
             //        Run Login logic
@@ -40,6 +46,8 @@ namespace Carvana.MarketExpansion.WebApi.Services
 
         public LoginTokens Login(UserCredentials userCredentials, string hashedPassword)
         {
+            GuardAgainstMissingCredentials(userCredentials);
+
             var isPasswordValid = _passwordService.IsPasswordValid(userCredentials.Password, hashedPassword);
 
             if (!isPasswordValid)
@@ -47,7 +55,7 @@ namespace Carvana.MarketExpansion.WebApi.Services
                 throw new InvalidCredentialsException();
             }
 
-            var user = _accountRepository.GetUserByUserName(userCredentials.Email);
+            var user = _accountRepository.GetUserByEmail(userCredentials.Email);
             var accessToken = _accessTokenService.CreateToken(user);
             var refreshToken = _refreshTokenService.CreateToken(user);
 
@@ -58,6 +66,14 @@ namespace Carvana.MarketExpansion.WebApi.Services
         public void Logout(string jwToken)
         {
             // revoke refresh token
+        }
+
+        private void GuardAgainstMissingCredentials(UserCredentials userCredentials)
+        {
+            if (string.IsNullOrWhiteSpace(userCredentials?.Email) || string.IsNullOrWhiteSpace(userCredentials.Password))
+            {
+                throw new InvalidCredentialsException();
+            }
         }
     }
 }
