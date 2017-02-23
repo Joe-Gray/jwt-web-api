@@ -15,5 +15,14 @@ namespace Carvana.MarketExpansion.WebApi.Tests
             Assert.IsNotNull(user);
             Assert.AreEqual("gbsjoe@gmail.com", user.Email);
         }
+
+        //[TestMethod]
+        public void Should_Get_PasswordHash_By_Email()
+        {
+            IAccountRepository accountRepository = new AccountRepository(new SqlConnectionFactory());
+            var passwordHash = accountRepository.GetUserPasswordHashByUserName("gbsjoe@gmail.com");
+
+            Assert.IsNotNull(passwordHash);
+        }
     }
 }

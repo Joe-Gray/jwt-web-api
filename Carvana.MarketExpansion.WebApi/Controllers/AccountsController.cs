@@ -1,5 +1,7 @@
 ﻿using System.Net;
 using System.Web.Http;
+using Carvana.MarketExpansion.WebApi.Data;
+using Carvana.MarketExpansion.WebApi.Exceptions;
 using Carvana.MarketExpansion.WebApi.Models;
 using Carvana.MarketExpansion.WebApi.Services;
 
@@ -9,10 +11,14 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
     public class AccountsController : ApiController
     {
         private readonly IAccountService _accountService;
+        private readonly IAccountRepository _accountRepository;
 
-        public AccountsController(IAccountService accountService)
+        public AccountsController(
+            IAccountService accountService, 
+            IAccountRepository accountRepository)
         {
             _accountService = accountService;
+            _accountRepository = accountRepository;
         }
 
         [Route("logout")]
@@ -47,14 +53,22 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
                 return BadRequest();
             }
 
-            var loginFailed = true;
+            var passwordHash = _accountRepository.GetUserPasswordHashByUserName(userCredentials.Email);
 
-            if (loginFailed)
+            if (string.IsNullOrWhiteSpace(passwordHash))
             {
-                return Content(HttpStatusCode.Forbidden, new {error = "Invalid Login Credentials"});
+                return Content(HttpStatusCode.Unauthorized, new { error = "Invalid Credentials" });
             }
 
-            return Ok();
+            try
+            {
+                var loginTokens = _accountService.Login(userCredentials, passwordHash);
+                return Ok(loginTokens);
+            }
+            catch (InvalidCredentialsException)
+            {
+                return Content(HttpStatusCode.Unauthorized, new { error = "Invalid Credentials" });
+            }
         }
     }
 }

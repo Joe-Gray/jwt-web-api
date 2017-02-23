@@ -1,4 +1,6 @@
-﻿using Carvana.MarketExpansion.WebApi.Models;
+﻿using Carvana.MarketExpansion.WebApi.Data;
+using Carvana.MarketExpansion.WebApi.Exceptions;
+using Carvana.MarketExpansion.WebApi.Models;
 
 namespace Carvana.MarketExpansion.WebApi.Services
 {
@@ -6,13 +8,22 @@ namespace Carvana.MarketExpansion.WebApi.Services
     {
         private readonly IPasswordService _passwordService;
         private readonly IJwtService _jwtService;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IAccessTokenService _accessTokenService;
+        private readonly IRefreshTokenService _refreshTokenService;
 
         public AccountService(
             IPasswordService passwordService, 
-            IJwtService jwtService)
+            IJwtService jwtService, 
+            IAccountRepository accountRepository, 
+            IAccessTokenService accessTokenService, 
+            IRefreshTokenService refreshTokenService)
         {
             _passwordService = passwordService;
             _jwtService = jwtService;
+            _accountRepository = accountRepository;
+            _accessTokenService = accessTokenService;
+            _refreshTokenService = refreshTokenService;
         }
 
         public string Register(UserCredentials userCredentials)
@@ -27,19 +38,21 @@ namespace Carvana.MarketExpansion.WebApi.Services
             return string.Empty;
         }
 
-        public string Login(UserCredentials userCredentials)
+        public LoginTokens Login(UserCredentials userCredentials, string hashedPassword)
         {
-            // Look up user by email
-            //   If not exists:
-            //    Return 401 Unauthorized
-            //  else:
-            //    Hash Password and compare against value in database
-            //        If Valid:
-            //          Return Access and Refresh Tokens to client
-            //        else:
-            //            Return 401 Unauthorized
+            var isPasswordValid = _passwordService.IsPasswordValid(userCredentials.Password, hashedPassword);
 
-            return string.Empty;
+            if (!isPasswordValid)
+            {
+                throw new InvalidCredentialsException();
+            }
+
+            var user = _accountRepository.GetUserByUserName(userCredentials.Email);
+            var accessToken = _accessTokenService.CreateToken(user);
+            var refreshToken = _refreshTokenService.CreateToken(user);
+
+            var loginTokens = new LoginTokens(accessToken, refreshToken);
+            return loginTokens;
         }
 
         public void Logout(string jwToken)

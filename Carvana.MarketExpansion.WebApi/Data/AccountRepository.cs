@@ -23,5 +23,14 @@ namespace Carvana.MarketExpansion.WebApi.Data
                 return user;
             }
         }
+
+        public string GetUserPasswordHashByUserName(string userName)
+        {
+            using (var conn = _sqlConnectionFactory.GetOpenSqlConnection())
+            {
+                var passwordHash = conn.QueryFirstOrDefault<string>("SELECT PasswordHash FROM dbo.AspNetUsers WHERE Email = @Email", new { Email = userName });
+                return passwordHash;
+            }
+        }
     }
 }
