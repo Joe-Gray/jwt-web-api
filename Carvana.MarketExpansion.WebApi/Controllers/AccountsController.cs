@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Web.Http;
 using Carvana.MarketExpansion.WebApi.Data;
 using Carvana.MarketExpansion.WebApi.Exceptions;
@@ -9,7 +8,7 @@ using Carvana.MarketExpansion.WebApi.Services;
 namespace Carvana.MarketExpansion.WebApi.Controllers
 {
     [RoutePrefix("api/accounts")]
-    public class AccountsController : ApiController
+    public class AccountsController : BaseApiController
     {
         private readonly IAccountService _accountService;
         private readonly IAccountRepository _accountRepository;
@@ -26,8 +25,12 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
         [HttpGet]
         public IHttpActionResult Logout()
         {
-            // get JWT from header and revoke it
+            if (AuthToken == null)
+            {
+                return Content(HttpStatusCode.BadRequest, new { error = "Missing Authorization Token" });
+            }
 
+            _accountService.Logout(AuthToken);
             return Ok(new { Message = "Logged Out!" });
         }
 

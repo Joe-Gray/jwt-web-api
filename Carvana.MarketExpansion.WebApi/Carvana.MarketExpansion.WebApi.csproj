@@ -134,6 +134,7 @@
   <ItemGroup>
     <Compile Include="Attributes\RequireHttpsAttribute.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
+    <Compile Include="Controllers\BaseApiController.cs" />
     <Compile Include="Data\AccountRepository.cs" />
     <Compile Include="Data\IAccountRepository.cs" />
     <Compile Include="Data\ISqlConnectionFactory.cs" />

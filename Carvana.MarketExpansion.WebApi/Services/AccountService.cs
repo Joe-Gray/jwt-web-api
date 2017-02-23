@@ -1,4 +1,5 @@
-﻿using Carvana.MarketExpansion.WebApi.Data;
+﻿using System;
+using Carvana.MarketExpansion.WebApi.Data;
 using Carvana.MarketExpansion.WebApi.Exceptions;
 using Carvana.MarketExpansion.WebApi.Models;
 
@@ -10,20 +11,23 @@ namespace Carvana.MarketExpansion.WebApi.Services
         private readonly IAccountRepository _accountRepository;
         private readonly IAccessTokenService _accessTokenService;
         private readonly IRefreshTokenService _refreshTokenService;
+        private readonly IJwtService _jwtService;
 
         public AccountService(
             IPasswordService passwordService, 
             IAccountRepository accountRepository, 
             IAccessTokenService accessTokenService, 
-            IRefreshTokenService refreshTokenService)
+            IRefreshTokenService refreshTokenService, 
+            IJwtService jwtService)
         {
             _passwordService = passwordService;
             _accountRepository = accountRepository;
             _accessTokenService = accessTokenService;
             _refreshTokenService = refreshTokenService;
+            _jwtService = jwtService;
         }
 
-        public string Register(UserCredentials userCredentials)
+        public LoginTokens Register(UserCredentials userCredentials)
         {
             GuardAgainstMissingCredentials(userCredentials);
 
@@ -34,14 +38,19 @@ namespace Carvana.MarketExpansion.WebApi.Services
                 throw new UserAlreadyRegisteredException();
             }
 
-            // Look up user by credentials
-            // If exists:
-            //        Run Login logic
-            //    else:
-            //        Create User and Run Login logic
+            var hashedPassword = _passwordService.HashPassword(userCredentials.Password);
 
+            user = new User
+            {
+                Email = userCredentials.Email,
+                Id = Guid.NewGuid().ToString(),
+                PasswordHash = hashedPassword
+            };
 
-            return string.Empty;
+            _accountRepository.CreateUser(user);
+
+            var loginTokens = GetTokensForUser(user.Email);
+            return loginTokens;
         }
 
         public LoginTokens Login(UserCredentials userCredentials, string hashedPassword)
@@ -55,17 +64,14 @@ namespace Carvana.MarketExpansion.WebApi.Services
                 throw new InvalidCredentialsException();
             }
 
-            var user = _accountRepository.GetUserByEmail(userCredentials.Email);
-            var accessToken = _accessTokenService.CreateToken(user);
-            var refreshToken = _refreshTokenService.CreateToken(user);
-
-            var loginTokens = new LoginTokens(accessToken, refreshToken);
+            var loginTokens = GetTokensForUser(userCredentials.Email);
             return loginTokens;
         }
 
         public void Logout(string jwToken)
         {
-            // revoke refresh token
+            var payload = _jwtService.GetJwtPayload(jwToken);
+            _accountRepository.RevokeUserRefreshToken(payload.userEmail);
         }
 
         private void GuardAgainstMissingCredentials(UserCredentials userCredentials)
@@ -74,6 +80,18 @@ namespace Carvana.MarketExpansion.WebApi.Services
             {
                 throw new InvalidCredentialsException();
             }
+        }
+
+        private LoginTokens GetTokensForUser(string email)
+        {
+            var user = _accountRepository.GetUserByEmail(email);
+            var accessToken = _accessTokenService.CreateToken(user);
+            var refreshToken = _refreshTokenService.CreateToken(user);
+            var refreshTokenPayload = _jwtService.GetJwtPayload(refreshToken);
+            _accountRepository.UpdateUserRefreshTokenId(email, refreshTokenPayload.jti);
+
+            var loginTokens = new LoginTokens(accessToken, refreshToken);
+            return loginTokens;
         }
     }
 }

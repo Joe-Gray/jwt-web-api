@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Carvana.MarketExpansion.WebApi.Models;
 using Dapper;
+using DapperExtensions;
 
 namespace Carvana.MarketExpansion.WebApi.Data
 {
@@ -30,6 +31,36 @@ namespace Carvana.MarketExpansion.WebApi.Data
             {
                 var passwordHash = conn.QueryFirstOrDefault<string>("SELECT PasswordHash FROM dbo.MarketSecurityUser WHERE Email = @Email", new { Email = email });
                 return passwordHash;
+            }
+        }
+
+        public void CreateUser(User user)
+        {
+            using (var conn = _sqlConnectionFactory.GetOpenSqlConnection())
+            {
+                var notsurewhatthisis = conn.Insert(user);
+            }
+        }
+
+        public void UpdateUserRefreshTokenId(string email, string refreshTokenId)
+        {
+            var user = GetUserByEmail(email);
+            user.RefreshTokenId = refreshTokenId;
+
+            using (var conn = _sqlConnectionFactory.GetOpenSqlConnection())
+            {
+                var notsurewhatthisis = conn.Update(user);
+            }
+        }
+
+        public void RevokeUserRefreshToken(string email)
+        {
+            var user = GetUserByEmail(email);
+            user.RefreshTokenId = null;
+
+            using (var conn = _sqlConnectionFactory.GetOpenSqlConnection())
+            {
+                var notsurewhatthisis = conn.Update(user);
             }
         }
     }
