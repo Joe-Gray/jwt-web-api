@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Carvana.MarketExpansion.WebApi.Models;
 using Dapper;
-using DapperExtensions;
 
 namespace Carvana.MarketExpansion.WebApi.Data
 {
@@ -19,6 +18,10 @@ namespace Carvana.MarketExpansion.WebApi.Data
             using (var conn = _sqlConnectionFactory.GetOpenSqlConnection())
             {
                 var user = conn.QueryFirstOrDefault<User>("SELECT Id, Email, PasswordHash FROM dbo.MarketSecurityUser WHERE Email = @Email", new {Email = email});
+                if (user == null)
+                {
+                    return null;
+                }
                 var claimValues = conn.Query<string>("SELECT c.Name FROM dbo.MarketSecurityUser u JOIN dbo.MarketSecurityUserRole ur ON ur.MarketSecurityUserId = u.Id JOIN dbo.MarketSecurityRole r ON r.Id = ur.MarketSecurityRoleId JOIN dbo.MarketSecurityClaim c ON c.MarketSecurityRoleId = r.Id WHERE u.Email = @Email", new { Email = email });
                 user.SecurityClaims = new List<string>(claimValues);
                 return user;
@@ -34,33 +37,40 @@ namespace Carvana.MarketExpansion.WebApi.Data
             }
         }
 
-        public void CreateUser(User user)
+        public int CreateUser(User user)
         {
             using (var conn = _sqlConnectionFactory.GetOpenSqlConnection())
             {
-                var notsurewhatthisis = conn.Insert(user);
+                var rowsAffected =
+                    conn.Execute(
+                        "INSERT INTO MarketSecurityUser (Id, Email, PasswordHash, RefreshTokenId) VALUES (@Id, @Email, @PasswordHash, @RefreshTokenId)",
+                        new {user.Id, user.Email, user.PasswordHash, user.RefreshTokenId});
+
+                return rowsAffected;
             }
         }
 
-        public void UpdateUserRefreshTokenId(string email, string refreshTokenId)
+        public int UpdateUserRefreshTokenId(string email, string refreshTokenId)
         {
-            var user = GetUserByEmail(email);
-            user.RefreshTokenId = refreshTokenId;
-
             using (var conn = _sqlConnectionFactory.GetOpenSqlConnection())
             {
-                var notsurewhatthisis = conn.Update(user);
+                var rowsAffected =
+                    conn.Execute("UPDATE MarketSecurityUser SET RefreshTokenId = @RefreshTokenId WHERE Email = @Email",
+                        new {Email = email, RefreshTokenId = refreshTokenId});
+
+                return rowsAffected;
             }
         }
 
-        public void RevokeUserRefreshToken(string email)
+        public int RevokeUserRefreshToken(string email)
         {
-            var user = GetUserByEmail(email);
-            user.RefreshTokenId = null;
-
             using (var conn = _sqlConnectionFactory.GetOpenSqlConnection())
             {
-                var notsurewhatthisis = conn.Update(user);
+                var rowsAffected =
+                    conn.Execute("UPDATE MarketSecurityUser SET RefreshTokenId = NULL WHERE Email = @Email",
+                        new { Email = email });
+
+                return rowsAffected;
             }
         }
     }

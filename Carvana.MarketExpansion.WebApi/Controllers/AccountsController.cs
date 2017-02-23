@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Web.Http;
-using Carvana.MarketExpansion.WebApi.Data;
 using Carvana.MarketExpansion.WebApi.Exceptions;
 using Carvana.MarketExpansion.WebApi.Models;
 using Carvana.MarketExpansion.WebApi.Services;
@@ -11,14 +10,10 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
     public class AccountsController : BaseApiController
     {
         private readonly IAccountService _accountService;
-        private readonly IAccountRepository _accountRepository;
 
-        public AccountsController(
-            IAccountService accountService, 
-            IAccountRepository accountRepository)
+        public AccountsController(IAccountService accountService)
         {
             _accountService = accountService;
-            _accountRepository = accountRepository;
         }
 
         [Route("logout")]
@@ -45,15 +40,13 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
 
             try
             {
-                _accountService.Register(userCredentials);
+                var loginTokens = _accountService.Register(userCredentials);
+                return Created("", loginTokens);
             }
             catch (InvalidCredentialsException)
             {
                 return Content(HttpStatusCode.Unauthorized, new { error = "Invalid Credentials" });
             }
-
-
-            return Created("", new {});
         }
 
         [Route("login")]
@@ -65,16 +58,9 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
                 return BadRequest();
             }
 
-            var passwordHash = _accountRepository.GetUserPasswordHashByEmail(userCredentials.Email);
-
-            if (string.IsNullOrWhiteSpace(passwordHash))
-            {
-                return Content(HttpStatusCode.Unauthorized, new { error = "Invalid Credentials" });
-            }
-
             try
             {
-                var loginTokens = _accountService.Login(userCredentials, passwordHash);
+                var loginTokens = _accountService.Login(userCredentials);
                 return Ok(loginTokens);
             }
             catch (InvalidCredentialsException)

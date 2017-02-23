@@ -5,7 +5,7 @@ namespace Carvana.MarketExpansion.WebApi.Services
     public interface IAccountService
     {
         LoginTokens Register(UserCredentials userCredentials);
-        LoginTokens Login(UserCredentials userCredentials, string hashedPassword);
+        LoginTokens Login(UserCredentials userCredentials);
         void Logout(string jwToken);
     }
 }

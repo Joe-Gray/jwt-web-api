@@ -53,9 +53,16 @@ namespace Carvana.MarketExpansion.WebApi.Services
             return loginTokens;
         }
 
-        public LoginTokens Login(UserCredentials userCredentials, string hashedPassword)
+        public LoginTokens Login(UserCredentials userCredentials)
         {
             GuardAgainstMissingCredentials(userCredentials);
+
+            var hashedPassword = _accountRepository.GetUserPasswordHashByEmail(userCredentials.Email);
+
+            if (string.IsNullOrWhiteSpace(hashedPassword))
+            {
+                throw new InvalidCredentialsException();
+            }
 
             var isPasswordValid = _passwordService.IsPasswordValid(userCredentials.Password, hashedPassword);
 

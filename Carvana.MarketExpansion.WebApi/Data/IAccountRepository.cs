@@ -6,8 +6,8 @@ namespace Carvana.MarketExpansion.WebApi.Data
     {
         User GetUserByEmail(string email);
         string GetUserPasswordHashByEmail(string email);
-        void CreateUser(User user);
-        void UpdateUserRefreshTokenId(string email, string refreshTokenId);
-        void RevokeUserRefreshToken(string email);
+        int CreateUser(User user);
+        int UpdateUserRefreshTokenId(string email, string refreshTokenId);
+        int RevokeUserRefreshToken(string email);
     }
 }
