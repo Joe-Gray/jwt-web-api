@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Web.Http;
+using Carvana.MarketExpansion.WebApi.Attributes;
 using Carvana.MarketExpansion.WebApi.Exceptions;
 using Carvana.MarketExpansion.WebApi.Models;
 using Carvana.MarketExpansion.WebApi.Services;
@@ -16,15 +17,11 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
             _accountService = accountService;
         }
 
+        [CustomAuthorization]
         [Route("logout")]
         [HttpGet]
         public IHttpActionResult Logout()
         {
-            if (AuthToken == null)
-            {
-                return Content(HttpStatusCode.BadRequest, new { error = "Missing Authorization Token" });
-            }
-
             _accountService.Logout(AuthToken);
             return Ok(new { Message = "Logged Out!" });
         }

@@ -132,9 +132,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\CustomAuthorizationAttribute.cs" />
     <Compile Include="Attributes\RequireHttpsAttribute.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\BaseApiController.cs" />
+    <Compile Include="Controllers\MarketsController.cs" />
     <Compile Include="Data\AccountRepository.cs" />
     <Compile Include="Data\IAccountRepository.cs" />
     <Compile Include="Data\ISqlConnectionFactory.cs" />

@@ -24,7 +24,7 @@ namespace Carvana.MarketExpansion.WebApi.Tests
             IAccessTokenService accessTokenService = new AccessTokenService(jwtService, accountRepository);
 
             var token = accessTokenService.CreateToken("gbsjoe@gmail.com");
-            var isValid = jwtService.DoesSignatureMatch(token);
+            var isValid = jwtService.IsSignatureValid(token);
 
             Assert.IsTrue(isValid);
         }

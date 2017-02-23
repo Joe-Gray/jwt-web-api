@@ -64,7 +64,7 @@ namespace Carvana.MarketExpansion.WebApi.Services
             return signature;
         }
         
-        public bool DoesSignatureMatch(string jwToken)
+        public bool IsSignatureValid(string jwToken)
         {
             var segments = jwToken.Split('.');
             var headerAndPayload = $"{segments[0]}.{segments[1]}";
@@ -74,17 +74,16 @@ namespace Carvana.MarketExpansion.WebApi.Services
             return signatureMatches;
         }
 
+        public bool IsTokenExpired(string jwToken)
+        {
+            return false;
+        }
+
         public JwtPayload GetJwtPayload(string jwToken)
         {
             var segments = jwToken.Split('.');
             var jwtPayload = DecodePayload(segments[1]);
             return jwtPayload;
-        }
-        
-        private JwtHeader DecodeHeader(string encodedHeader)
-        {
-            var jwtHeader = _jwtEncodingService.DecodeObject<JwtHeader>(encodedHeader);
-            return jwtHeader;
         }
         
         private int GetTotalSecondsSinceEpochTime(DateTime currentUtcTime)
