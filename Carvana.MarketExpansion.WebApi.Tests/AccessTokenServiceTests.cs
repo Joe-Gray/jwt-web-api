@@ -20,7 +20,7 @@ namespace Carvana.MarketExpansion.WebApi.Tests
             A.CallTo<User>(() => accountRepository.GetUserByEmail("gbsjoe@gmail.com"))
                 .Returns(user);
 
-            IJwtService jwtService = new JwtService(new JwtEncodingService());
+            IJwtService jwtService = new JwtService(new JwtEncodingService(), accountRepository);
             IAccessTokenService accessTokenService = new AccessTokenService(jwtService, accountRepository);
 
             var token = accessTokenService.CreateToken("gbsjoe@gmail.com");
@@ -38,7 +38,7 @@ namespace Carvana.MarketExpansion.WebApi.Tests
             A.CallTo<User>(() => accountRepository.GetUserByEmail("gbsjoe@gmail.com"))
                 .Returns(user);
 
-            IJwtService jwtService = new JwtService(new JwtEncodingService());
+            IJwtService jwtService = new JwtService(new JwtEncodingService(), accountRepository);
             IAccessTokenService accessTokenService = new AccessTokenService(jwtService, accountRepository);
 
             var token = accessTokenService.CreateToken("gbsjoe@gmail.com");

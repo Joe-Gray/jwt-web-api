@@ -11,6 +11,7 @@ namespace Carvana.MarketExpansion.WebApi.Services
         bool IsSignatureValid(string jwToken);
         bool IsTokenExpired(string jwToken);
         bool IsTokenRevoked(string jwToken);
+        bool IsAnyClaimInToken(string jwToken, string[] claims);
         JwtPayload GetJwtPayload(string jwToken);
     }
 }

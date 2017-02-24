@@ -21,7 +21,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
         public IHttpActionResult Logout()
         {
             _accountService.Logout(AuthToken);
-            return Ok(new { Message = "Logged Out!" });
+            return Ok(new { message = "Logged Out!" });
         }
 
         [Route("register")]
@@ -30,7 +30,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
         {
             if (userCredentials == null)
             {
-                return BadRequest();
+                return Content(HttpStatusCode.BadRequest, new { errorCode = "InvalidCredentials", errorMessage = "Missing Credentials" });
             }
 
             try
@@ -40,7 +40,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
             }
             catch (InvalidCredentialsException)
             {
-                return Content(HttpStatusCode.Unauthorized, new { error = "Invalid Credentials" });
+                return Content(HttpStatusCode.Unauthorized, new { errorCode = "InvalidCredentials", errorMessage = "Invalid Credentials" });
             }
         }
 
@@ -50,7 +50,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
         {
             if (userCredentials == null)
             {
-                return BadRequest();
+                return Content(HttpStatusCode.BadRequest, new { errorCode = "InvalidCredentials", errorMessage = "Missing Credentials" });
             }
 
             try
@@ -60,7 +60,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
             }
             catch (InvalidCredentialsException)
             {
-                return Content(HttpStatusCode.Unauthorized, new { error = "Invalid Credentials" });
+                return Content(HttpStatusCode.Unauthorized, new { errorCode = "InvalidCredentials", errorMessage = "Invalid Credentials" });
             }
         }
     }

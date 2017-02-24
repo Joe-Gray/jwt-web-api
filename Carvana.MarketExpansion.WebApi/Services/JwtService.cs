@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Cryptography;
+using Carvana.MarketExpansion.WebApi.Data;
 using Carvana.MarketExpansion.WebApi.Models;
 
 namespace Carvana.MarketExpansion.WebApi.Services
@@ -8,10 +10,14 @@ namespace Carvana.MarketExpansion.WebApi.Services
     {
         private readonly string _secret = "OurLittleSecret";
         private readonly IJwtEncodingService _jwtEncodingService;
+        private readonly IAccountRepository _accountRepository;
 
-        public JwtService(IJwtEncodingService jwtEncodingService)
+        public JwtService(
+            IJwtEncodingService jwtEncodingService, 
+            IAccountRepository accountRepository)
         {
             _jwtEncodingService = jwtEncodingService;
+            _accountRepository = accountRepository;
         }
 
         public DateTime EpochTime => new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
@@ -74,15 +80,36 @@ namespace Carvana.MarketExpansion.WebApi.Services
             return signatureMatches;
         }
 
-        // TODO: implement me
         public bool IsTokenExpired(string jwToken)
         {
-            return false;
+            var jwtPayload = GetJwtPayload(jwToken);
+            var currentTotalSeconds = GetTotalSecondsSinceEpochTime(DateTime.UtcNow);
+
+            var isTokenExpired = int.Parse(jwtPayload.exp) < currentTotalSeconds;
+            return isTokenExpired;
         }
 
-        // TODO: implement me
         public bool IsTokenRevoked(string jwToken)
         {
+            var jwtPayload = GetJwtPayload(jwToken);
+            var user = _accountRepository.GetUserByEmail(jwtPayload.userEmail);
+
+            var isTokenRevoked = user.RefreshTokenId == null;
+            return isTokenRevoked;
+        }
+
+        public bool IsAnyClaimInToken(string jwToken, string[] claims)
+        {
+            var jwtPayload = GetJwtPayload(jwToken);
+
+            foreach (var claim in claims)
+            {
+                if (jwtPayload.userSecurityClaims.Any(c => c == claim))
+                {
+                    return true;
+                }
+            }
+
             return false;
         }
 
