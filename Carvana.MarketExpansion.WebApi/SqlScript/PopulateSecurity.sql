@@ -57,8 +57,8 @@ END
 
 SELECT @securityUserId = SecurityUserID FROM MarketAuth.tblSecurityUser WHERE Email = 'test@test.com'
 
-IF NOT EXISTS(SELECT 1 FROM MarketAuth.tblSecurityUserRole WHERE SecurityUserId = @securityUserId)
+IF NOT EXISTS(SELECT 1 FROM MarketAuth.tblSecurityRoleUser WHERE SecurityUserId = @securityUserId)
 BEGIN
-	INSERT INTO MarketAuth.tblSecurityUserRole(SecurityUserRoleGUID, SecurityUserID, SecurityRoleID, RowLoadedDateTime, RowUpdatedDateTime) 
+	INSERT INTO MarketAuth.tblSecurityRoleUser(SecurityRoleUserGUID, SecurityUserID, SecurityRoleID, RowLoadedDateTime, RowUpdatedDateTime) 
 	SELECT NEWID(), @securityUserId, SecurityRoleID, SYSDATETIME(), SYSDATETIME() FROM MarketAuth.tblSecurityRole
 END
