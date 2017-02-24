@@ -163,6 +163,8 @@
     <Compile Include="Services\JwtService.cs" />
     <Compile Include="Services\PasswordService.cs" />
     <Compile Include="Services\RefreshTokenService.cs" />
+    <Compile Include="Settings\ISecuritySettings.cs" />
+    <Compile Include="Settings\SecuritySettings.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

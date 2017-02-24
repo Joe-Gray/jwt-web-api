@@ -1,21 +1,24 @@
 ﻿using System;
 using Carvana.MarketExpansion.WebApi.Data;
 using Carvana.MarketExpansion.WebApi.Models;
+using Carvana.MarketExpansion.WebApi.Settings;
 
 namespace Carvana.MarketExpansion.WebApi.Services
 {
     public class AccessTokenService : IAccessTokenService
     {
-        private readonly int _accessTokenLifespanMinutes = 20;
+        private readonly ISecuritySettings _securitySettings;
         private readonly IJwtService _jwtService;
         private readonly IAccountRepository _accountRepository;
 
         public AccessTokenService(
             IJwtService jwtService, 
-            IAccountRepository accountRepository)
+            IAccountRepository accountRepository, 
+            ISecuritySettings securitySettings)
         {
             _jwtService = jwtService;
             _accountRepository = accountRepository;
+            _securitySettings = securitySettings;
         }
 
         public string CreateToken(string email)
@@ -43,7 +46,10 @@ namespace Carvana.MarketExpansion.WebApi.Services
         private int GetAccessTokenExpirationInSeconds(DateTime currentUtcTime)
         {
             var expirationInSeconds =
-                (int)currentUtcTime.AddMinutes(_accessTokenLifespanMinutes).Subtract(_jwtService.EpochTime).TotalSeconds;
+                (int)
+                currentUtcTime.AddSeconds(_securitySettings.AccessTokenLifespanSeconds)
+                    .Subtract(_jwtService.EpochTime)
+                    .TotalSeconds;
 
             return expirationInSeconds;
         }

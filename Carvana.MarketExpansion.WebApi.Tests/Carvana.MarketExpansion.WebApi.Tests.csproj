@@ -90,7 +90,7 @@
     <Compile Include="AccountRepositoryIntegrationTests.cs" />
     <Compile Include="AccountServiceTests.cs" />
     <Compile Include="EncodingServiceTests.cs" />
-    <Compile Include="AccessTokenServiceTests.cs" />
+    <Compile Include="TokenServiceTests.cs" />
     <Compile Include="PasswordServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

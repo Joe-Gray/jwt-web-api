@@ -2,6 +2,7 @@
 using Carvana.MarketExpansion.WebApi.Attributes;
 using Carvana.MarketExpansion.WebApi.Data;
 using Carvana.MarketExpansion.WebApi.Services;
+using Carvana.MarketExpansion.WebApi.Settings;
 using Microsoft.Owin;
 using Newtonsoft.Json.Serialization;
 using Owin;
@@ -27,6 +28,7 @@ namespace Carvana.MarketExpansion.WebApi
             container.Options.DefaultScopedLifestyle = new WebApiRequestLifestyle();
             container.Options.DefaultLifestyle = Lifestyle.Transient;
 
+            container.Register<ISecuritySettings, SecuritySettings>(Lifestyle.Transient);
             container.Register<ISqlConnectionFactory, SqlConnectionFactory>(Lifestyle.Transient);
             container.Register<IAccountRepository, AccountRepository>(Lifestyle.Transient);
             container.Register<IJwtEncodingService, JwtEncodingService>(Lifestyle.Transient);
