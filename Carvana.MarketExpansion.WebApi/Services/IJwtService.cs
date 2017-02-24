@@ -7,7 +7,7 @@ namespace Carvana.MarketExpansion.WebApi.Services
     {
         DateTime EpochTime { get; }
         string CreateToken(JwtPayload jwtPayload);
-        JwtPayload CreateJwtPayload(User user, DateTime issuedAt, int tokenExpiration, string tokenType);
+        JwtPayload CreateJwtPayload(User user, DateTime issuedAt, int tokenExpiration, JwTokenType tokenType);
         bool IsSignatureValid(string jwToken);
         bool IsTokenExpired(string jwToken);
         bool IsTokenRevoked(string jwToken);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Carvana.MarketExpansion.WebApi.Data;
 using Carvana.MarketExpansion.WebApi.Models;
@@ -25,7 +26,7 @@ namespace Carvana.MarketExpansion.WebApi.Tests
             _user = new User
             {
                 Email = "gbsjoe@gmail.com",
-                Id = "123456789",
+                SecurityUserGuid = Guid.NewGuid(),
                 RefreshTokenId = "000123456789",
                 SecurityClaims = new List<string> { "ViewMarkets", "AddMarkets" }
             };

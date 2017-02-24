@@ -7,5 +7,6 @@ namespace Carvana.MarketExpansion.WebApi.Services
         LoginTokens Register(UserCredentials userCredentials);
         LoginTokens Login(UserCredentials userCredentials);
         void Logout(string jwToken);
+        string GetAccessToken(string refreshToken);
     }
 }

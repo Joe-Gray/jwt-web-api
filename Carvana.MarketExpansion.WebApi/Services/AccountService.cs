@@ -43,7 +43,7 @@ namespace Carvana.MarketExpansion.WebApi.Services
             user = new User
             {
                 Email = userCredentials.Email,
-                Id = Guid.NewGuid().ToString(),
+                SecurityUserGuid = Guid.NewGuid(),
                 PasswordHash = hashedPassword
             };
 
@@ -79,6 +79,13 @@ namespace Carvana.MarketExpansion.WebApi.Services
         {
             var payload = _jwtService.GetJwtPayload(jwToken);
             _accountRepository.RevokeUserRefreshToken(payload.userEmail);
+        }
+
+        public string GetAccessToken(string refreshToken)
+        {
+            var jwtPayload = _jwtService.GetJwtPayload(refreshToken);
+            var accessToken = _accessTokenService.CreateToken(jwtPayload.userEmail);
+            return accessToken;
         }
 
         private void GuardAgainstMissingCredentials(UserCredentials userCredentials)

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Web.Http;
+using Carvana.MarketExpansion.WebApi.Attributes;
 using Carvana.MarketExpansion.WebApi.Exceptions;
 using Carvana.MarketExpansion.WebApi.Models;
 using Carvana.MarketExpansion.WebApi.Services;
@@ -16,6 +17,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
             _accountService = accountService;
         }
 
+        [AccessTokenAuthorization]
         [Route("logout")]
         [HttpGet]
         public IHttpActionResult Logout()
@@ -62,6 +64,15 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
             {
                 return Content(HttpStatusCode.Unauthorized, new { errorCode = "InvalidCredentials", errorMessage = "Invalid Credentials" });
             }
+        }
+
+        [RefreshTokenAuthorization]
+        [Route("getAccessToken")]
+        [HttpGet]
+        public IHttpActionResult GetAccessToken()
+        {
+            var accessToken = _accountService.GetAccessToken(Request.Headers.Authorization.Parameter);
+            return Ok(new { accessToken });
         }
     }
 }

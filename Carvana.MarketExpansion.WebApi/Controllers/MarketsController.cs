@@ -5,7 +5,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
 {
     public class MarketsController : BaseApiController
     {
-        [CustomAuthorization("ViewMarket")]
+        [AccessTokenAuthorization("ViewMarket")]
         [Route("view")]
         [HttpGet]
         public IHttpActionResult GetMarkets()
@@ -13,7 +13,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
             return Ok();
         }
 
-        [CustomAuthorization("AddMarket")]
+        [AccessTokenAuthorization("AddMarket")]
         [Route("add")]
         [HttpGet]
         public IHttpActionResult AddMarkets()
@@ -21,7 +21,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
             return Ok();
         }
 
-        [CustomAuthorization("EditMarket")]
+        [AccessTokenAuthorization("EditMarket")]
         [Route("edit")]
         [HttpGet]
         public IHttpActionResult EditMarkets()
@@ -29,7 +29,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
             return Ok();
         }
 
-        [CustomAuthorization("DeleteMarket")]
+        [AccessTokenAuthorization("DeleteMarket")]
         [Route("delete")]
         [HttpGet]
         public IHttpActionResult DeleteMarkets()

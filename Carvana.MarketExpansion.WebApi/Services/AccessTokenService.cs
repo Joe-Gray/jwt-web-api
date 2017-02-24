@@ -38,7 +38,7 @@ namespace Carvana.MarketExpansion.WebApi.Services
         {
             var issuedAt = DateTime.UtcNow;
             var tokenExpirationInSeconds = GetAccessTokenExpirationInSeconds(issuedAt);
-            var jwtPayload = _jwtService.CreateJwtPayload(user, issuedAt, tokenExpirationInSeconds, "access");
+            var jwtPayload = _jwtService.CreateJwtPayload(user, issuedAt, tokenExpirationInSeconds, JwTokenType.Access);
             jwtPayload.userSecurityClaims = user.SecurityClaims;
             return jwtPayload;
         }

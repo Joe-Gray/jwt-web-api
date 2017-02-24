@@ -5,5 +5,6 @@ namespace Carvana.MarketExpansion.WebApi.Data
     public interface ISqlConnectionFactory
     {
         SqlConnection GetOpenSqlConnection();
+        SqlConnection GetOpenAuthDatabaseSqlConnection();
     }
 }

@@ -132,7 +132,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\CustomAuthorizationAttribute.cs" />
+    <Compile Include="Attributes\BaseTokenAuthorizationAttribute.cs" />
+    <Compile Include="Attributes\RefreshTokenAuthorizationAttribute.cs" />
+    <Compile Include="Attributes\AccessTokenAuthorizationAttribute.cs" />
     <Compile Include="Attributes\RequireHttpsAttribute.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\BaseApiController.cs" />
@@ -143,6 +145,7 @@
     <Compile Include="Data\SqlConnectionFactory.cs" />
     <Compile Include="Exceptions\UserAlreadyRegisteredException.cs" />
     <Compile Include="Exceptions\InvalidCredentialsException.cs" />
+    <Compile Include="Models\JwTokenType.cs" />
     <Compile Include="Models\LoginTokens.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Exceptions\CannotPerformOperationException.cs" />

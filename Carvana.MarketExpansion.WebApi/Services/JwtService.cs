@@ -32,7 +32,7 @@ namespace Carvana.MarketExpansion.WebApi.Services
             return token;
         }
         
-        public JwtPayload CreateJwtPayload(User user, DateTime issuedAt, int tokenExpiration, string tokenType)
+        public JwtPayload CreateJwtPayload(User user, DateTime issuedAt, int tokenExpiration, JwTokenType tokenType)
         {
             var iat = GetTotalSecondsSinceEpochTime(issuedAt);
 
@@ -46,8 +46,8 @@ namespace Carvana.MarketExpansion.WebApi.Services
                 jti = Guid.NewGuid().ToString().ToLower(),
                 sub = user.Email,
                 userEmail = user.Email,
-                userId = user.Id,
-                tokenType = tokenType
+                userId = user.SecurityUserGuid.ToString(),
+                tokenType = tokenType.ToString()
             };
 
             return payload;

@@ -1,6 +1,7 @@
 ﻿using Carvana.MarketExpansion.WebApi.Data;
 using Carvana.MarketExpansion.WebApi.Models;
 using Carvana.MarketExpansion.WebApi.Services;
+using Carvana.MarketExpansion.WebApi.Settings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleInjector;
 
@@ -34,9 +35,10 @@ namespace Carvana.MarketExpansion.WebApi.Tests
         [TestMethod]
         public void Should_Login_User()
         {
-            var email = "jib@jab.com";
+            var email = "jib2@jab.com";
             var userCreds = new UserCredentials { Email = email, Password = "secretPassword" };
             var accountService = _registry.GetInstance<IAccountService>();
+            accountService.Register(userCreds);
             var tokens = accountService.Login(userCreds);
 
             Assert.IsNotNull(tokens.RefreshToken);
@@ -46,7 +48,7 @@ namespace Carvana.MarketExpansion.WebApi.Tests
         [TestMethod]
         public void Should_Logout_User()
         {
-            var email = "jib@jab.com";
+            var email = "jib2@jab.com";
             var userCreds = new UserCredentials { Email = email, Password = "secretPassword" };
             var accountService = _registry.GetInstance<IAccountService>();
             var tokens = accountService.Login(userCreds);
@@ -62,6 +64,7 @@ namespace Carvana.MarketExpansion.WebApi.Tests
         {
             _registry = new Container();
 
+            _registry.Register<ISecuritySettings, SecuritySettings>(Lifestyle.Transient);
             _registry.Register<ISqlConnectionFactory, SqlConnectionFactory>(Lifestyle.Transient);
             _registry.Register<IAccountRepository, AccountRepository>(Lifestyle.Transient);
             _registry.Register<IJwtEncodingService, JwtEncodingService>(Lifestyle.Transient);
