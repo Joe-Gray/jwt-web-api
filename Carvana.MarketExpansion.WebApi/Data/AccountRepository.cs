@@ -23,7 +23,7 @@ namespace Carvana.MarketExpansion.WebApi.Data
                 {
                     return null;
                 }
-                var claimValues = conn.Query<string>("SELECT c.Name FROM MarketAuth.tblSecurityUser u JOIN MarketAuth.tblSecurityRoleUser ur ON ur.SecurityUserId = u.SecurityUserId JOIN MarketAuth.tblSecurityRole r ON r.SecurityRoleId = ur.SecurityRoleId JOIN MarketAuth.tblSecurityClaim c ON c.SecurityRoleId = r.SecurityRoleId WHERE u.Email = @Email", new { Email = email });
+                var claimValues = conn.Query<string>("SELECT DISTINCT c.Name FROM MarketAuth.tblSecurityUser u JOIN MarketAuth.tblSecurityRoleUser ur ON ur.SecurityUserId = u.SecurityUserId JOIN MarketAuth.tblSecurityRole r ON r.SecurityRoleId = ur.SecurityRoleId JOIN MarketAuth.tblSecurityRoleClaim rc ON rc.SecurityRoleId = r.SecurityRoleId JOIN MarketAuth.tblSecurityClaim c ON c.SecurityClaimId = rc.SecurityClaimId WHERE u.Email = @Email", new { Email = email });
                 user.SecurityClaims = new List<string>(claimValues);
                 return user;
             }
