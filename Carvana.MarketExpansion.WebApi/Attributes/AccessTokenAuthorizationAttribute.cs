@@ -18,7 +18,7 @@ namespace Carvana.MarketExpansion.WebApi.Attributes
         {
             base.OnAuthorization(actionContext);
 
-            if (actionContext.Response.StatusCode == HttpStatusCode.Unauthorized)
+            if (actionContext.Response?.StatusCode == HttpStatusCode.Unauthorized)
             {
                 return;
             }
@@ -28,7 +28,7 @@ namespace Carvana.MarketExpansion.WebApi.Attributes
             if (!isAnyClaimInToken)
             {
                 actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized,
-                    new { errorCode = "MissingClaim", errorMessage = "Missing Claim" });
+                    new { errorCode = "MissingClaim", message = "Missing Claim" });
 
                 return;
             }

@@ -3,6 +3,7 @@ using Carvana.MarketExpansion.WebApi.Attributes;
 
 namespace Carvana.MarketExpansion.WebApi.Controllers
 {
+    [RoutePrefix("api/markets")]
     public class MarketsController : BaseApiController
     {
         [AccessTokenAuthorization("ViewMarket")]
@@ -10,12 +11,12 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
         [HttpGet]
         public IHttpActionResult GetMarkets()
         {
-            return Ok();
+            return Ok(new {message="success"});
         }
 
         [AccessTokenAuthorization("AddMarket")]
         [Route("add")]
-        [HttpGet]
+        [HttpPost]
         public IHttpActionResult AddMarkets()
         {
             return Ok();
@@ -23,7 +24,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
 
         [AccessTokenAuthorization("EditMarket")]
         [Route("edit")]
-        [HttpGet]
+        [HttpPost]
         public IHttpActionResult EditMarkets()
         {
             return Ok();
@@ -31,7 +32,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
 
         [AccessTokenAuthorization("DeleteMarket")]
         [Route("delete")]
-        [HttpGet]
+        [HttpDelete]
         public IHttpActionResult DeleteMarkets()
         {
             return Ok();

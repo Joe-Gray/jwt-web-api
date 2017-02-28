@@ -18,7 +18,7 @@ namespace Carvana.MarketExpansion.WebApi.Data
         {
             using (var conn = _sqlConnectionFactory.GetOpenAuthDatabaseSqlConnection())
             {
-                var user = conn.QueryFirstOrDefault<User>("SELECT SecurityUserId, SecurityUserGuid, Email, PasswordHash FROM MarketAuth.tblSecurityUser WHERE Email = @Email", new {Email = email});
+                var user = conn.QueryFirstOrDefault<User>("SELECT SecurityUserId, SecurityUserGuid, RefreshTokenId, Email, PasswordHash FROM MarketAuth.tblSecurityUser WHERE Email = @Email", new {Email = email});
                 if (user == null)
                 {
                     return null;

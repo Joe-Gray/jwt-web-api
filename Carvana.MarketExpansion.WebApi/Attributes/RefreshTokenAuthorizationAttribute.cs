@@ -21,7 +21,7 @@ namespace Carvana.MarketExpansion.WebApi.Attributes
             if (jwtPayload.tokenType != JwTokenType.Refresh.ToString())
             {
                 actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized,
-                    new { errorCode = "TokenNotRefreshType", errorMessage = "Token is not a Refresh Token" });
+                    new { errorCode = "TokenNotRefreshType", message = "Token is not a Refresh Token" });
 
                 return;
 

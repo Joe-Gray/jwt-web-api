@@ -35,7 +35,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
         {
             if (userCredentials == null)
             {
-                return Content(HttpStatusCode.BadRequest, new { errorCode = "InvalidCredentials", errorMessage = "Missing Credentials" });
+                return Content(HttpStatusCode.BadRequest, new { errorCode = "InvalidCredentials", message = "Missing Credentials" });
             }
 
             try
@@ -45,7 +45,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
             }
             catch (InvalidCredentialsException)
             {
-                return Content(HttpStatusCode.Unauthorized, new { errorCode = "InvalidCredentials", errorMessage = "Invalid Credentials" });
+                return Content(HttpStatusCode.Unauthorized, new { errorCode = "InvalidCredentials", message = "Invalid Credentials" });
             }
         }
 
@@ -55,7 +55,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
         {
             if (userCredentials == null)
             {
-                return Content(HttpStatusCode.BadRequest, new { errorCode = "InvalidCredentials", errorMessage = "Missing Credentials" });
+                return Content(HttpStatusCode.BadRequest, new { errorCode = "InvalidCredentials", message = "Missing Credentials" });
             }
 
             try
@@ -65,7 +65,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
             }
             catch (InvalidCredentialsException)
             {
-                return Content(HttpStatusCode.Unauthorized, new { errorCode = "InvalidCredentials", errorMessage = "Invalid Credentials" });
+                return Content(HttpStatusCode.Unauthorized, new { errorCode = "InvalidCredentials", message = "Invalid Credentials" });
             }
         }
 
@@ -75,7 +75,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
         public IHttpActionResult GetAccessToken()
         {
             var accessToken = _accountService.GetAccessToken(Request.Headers.Authorization.Parameter);
-            return Ok(new { accessToken });
+            return Ok(new { token = accessToken });
         }
     }
 }

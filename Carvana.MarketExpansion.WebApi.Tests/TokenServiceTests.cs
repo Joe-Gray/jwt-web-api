@@ -27,7 +27,7 @@ namespace Carvana.MarketExpansion.WebApi.Tests
             {
                 Email = "gbsjoe@gmail.com",
                 SecurityUserGuid = Guid.NewGuid(),
-                RefreshTokenId = "000123456789",
+                RefreshTokenId = Guid.NewGuid(),
                 SecurityClaims = new List<string> { "ViewMarkets", "AddMarkets" }
             };
 

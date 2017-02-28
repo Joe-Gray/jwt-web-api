@@ -24,7 +24,7 @@ namespace Carvana.MarketExpansion.WebApi.Attributes
             if (AuthToken == null)
             {
                 actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized,
-                    new { errorCode = "MissingToken", errorMessage = "Missing Token" });
+                    new { errorCode = "MissingToken", message = "Missing Token" });
 
                 return;
             }
@@ -34,7 +34,7 @@ namespace Carvana.MarketExpansion.WebApi.Attributes
             if (!isSignatureValid)
             {
                 actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized,
-                    new { errorCode = "InvalidToken", errorMessage = "Invalid Token" });
+                    new { errorCode = "InvalidToken", message = "Invalid Token" });
 
                 return;
             }
@@ -44,7 +44,7 @@ namespace Carvana.MarketExpansion.WebApi.Attributes
             if (isTokenExpired)
             {
                 actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized,
-                    new { errorCode = "TokenExpired", errorMessage = "Token Expired" });
+                    new { errorCode = "TokenExpired", message = "Token Expired" });
 
                 return;
             }
@@ -54,7 +54,7 @@ namespace Carvana.MarketExpansion.WebApi.Attributes
             if (isTokenRevoked)
             {
                 actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized,
-                    new { errorCode = "TokenRevoked", errorMessage = "Token Revoked" });
+                    new { errorCode = "TokenRevoked", message = "Token Revoked" });
 
                 return;
 
