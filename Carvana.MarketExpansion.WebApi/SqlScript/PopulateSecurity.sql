@@ -1,22 +1,30 @@
 ﻿DECLARE @adminRoleId INT
 DECLARE @marketRoleId INT
 DECLARE @securityUserId INT
+DECLARE @viewMarketRoleId INT
+DECLARE @viewMarketClaim INT
 
 IF NOT EXISTS(SELECT 1 FROM MarketAuth.tblSecurityRole WHERE Name = 'Admin')
 BEGIN
-	INSERT INTO MarketAuth.tblSecurityRole(SecurityRoleGUID, Name, RowLoadedDateTime, RowUpdatedDateTime) 
-	VALUES ('7D1AD8A9-7C80-484C-8F69-962C96B2308B', 'Admin', SYSDATETIME(), SYSDATETIME())
+	INSERT INTO MarketAuth.tblSecurityRole(Name) 
+	VALUES ('Admin')
 END
 
 IF NOT EXISTS(SELECT 1 FROM MarketAuth.tblSecurityRole WHERE Name = 'ManageMarket')
 BEGIN
+	INSERT INTO MarketAuth.tblSecurityRole(Name) 
+	VALUES ('ManageMarket')
+END
+
+IF NOT EXISTS(SELECT 1 FROM MarketAuth.tblSecurityRole WHERE Name = 'ViewMarket')
+BEGIN
 	INSERT INTO MarketAuth.tblSecurityRole(SecurityRoleGUID, Name, RowLoadedDateTime, RowUpdatedDateTime) 
-	VALUES ('69CE158E-0850-49B6-8F69-13434BD80AAD', 'ManageMarket', SYSDATETIME(), SYSDATETIME())
+	VALUES ('BE343A29-A5F1-4034-9646-0344F07D1BB7', 'ViewMarket', SYSDATETIME(), SYSDATETIME())
 END
 
 SELECT @adminRoleId = SecurityRoleID FROM MarketAuth.tblSecurityRole WHERE Name = 'Admin'
 SELECT @marketRoleId = SecurityRoleID FROM MarketAuth.tblSecurityRole WHERE Name = 'ManageMarket'
-
+SELECT @viewMarketRoleId = SecurityRoleID FROM MarketAuth.tblSecurityRole WHERE Name = 'ViewMarket'
 
 
 IF NOT EXISTS(SELECT 1 FROM MarketAuth.tblSecurityClaim WHERE Name = 'Admin')
@@ -49,6 +57,14 @@ IF NOT EXISTS(SELECT 1 FROM MarketAuth.tblSecurityClaim WHERE Name = 'ViewMarket
 BEGIN
 	INSERT INTO MarketAuth.tblSecurityClaim(SecurityClaimGUID, Name, RowLoadedDateTime, RowUpdatedDateTime) 
 	VALUES ('CED9FC91-B19A-42D1-A463-3EB05DE9F502', 'ViewMarket', SYSDATETIME(), SYSDATETIME())
+END
+
+SELECT @viewMarketClaim = SecurityClaimID FROM MarketAuth.tblSecurityClaim WHERE Name = 'ViewMarket'
+
+IF NOT EXISTS(SELECT 1 FROM MarketAuth.tblSecurityRoleClaim WHERE SecurityRoleId = @viewMarketRoleId AND SecurityClaimId = @viewMarketClaim)
+BEGIN
+	INSERT INTO MarketAuth.tblSecurityRoleClaim(SecurityClaimId, SecurityRoleId) 
+	VALUES (@viewMarketClaim, @viewMarketRoleId)
 END
 
 IF NOT EXISTS(SELECT 1 FROM MarketAuth.tblSecurityRoleClaim WHERE SecurityRoleId = @adminRoleId)

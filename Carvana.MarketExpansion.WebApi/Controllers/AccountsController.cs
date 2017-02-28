@@ -17,12 +17,15 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
             _accountService = accountService;
         }
 
-        [AccessTokenAuthorization]
         [Route("logout")]
         [HttpGet]
         public IHttpActionResult Logout()
         {
-            _accountService.Logout(AuthToken);
+            if (AuthToken != null)
+            {
+                _accountService.Logout(AuthToken);
+            }
+
             return Ok(new { message = "Logged Out!" });
         }
 
