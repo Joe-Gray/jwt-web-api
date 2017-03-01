@@ -11,7 +11,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
         [HttpGet]
         public IHttpActionResult GetMarkets()
         {
-            return Ok(new {message="success"});
+            return Ok(new {message="you view market"});
         }
 
         [AccessTokenAuthorization("AddMarket")]
@@ -19,7 +19,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
         [HttpPost]
         public IHttpActionResult AddMarkets()
         {
-            return Ok();
+            return Ok(new { message = "you add market" });
         }
 
         [AccessTokenAuthorization("EditMarket")]
@@ -27,7 +27,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
         [HttpPost]
         public IHttpActionResult EditMarkets()
         {
-            return Ok();
+            return Ok(new { message = "you edit market" });
         }
 
         [AccessTokenAuthorization("DeleteMarket")]
@@ -35,7 +35,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
         [HttpDelete]
         public IHttpActionResult DeleteMarkets()
         {
-            return Ok();
+            return Ok(new { message = "you delete market" });
         }
     }
 }

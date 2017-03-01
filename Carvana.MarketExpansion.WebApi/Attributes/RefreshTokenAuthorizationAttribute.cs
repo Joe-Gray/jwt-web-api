@@ -11,7 +11,7 @@ namespace Carvana.MarketExpansion.WebApi.Attributes
         {
             base.OnAuthorization(actionContext);
 
-            if (actionContext.Response.StatusCode == HttpStatusCode.Unauthorized)
+            if (actionContext.Response?.StatusCode == HttpStatusCode.Unauthorized)
             {
                 return;
             }
