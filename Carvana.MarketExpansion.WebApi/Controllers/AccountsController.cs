@@ -21,7 +21,7 @@ namespace Carvana.MarketExpansion.WebApi.Controllers
         [HttpGet]
         public IHttpActionResult Logout()
         {
-            if (AuthToken != null)
+            if (AuthToken != null && AuthToken != "null")
             {
                 _accountService.Logout(AuthToken);
             }

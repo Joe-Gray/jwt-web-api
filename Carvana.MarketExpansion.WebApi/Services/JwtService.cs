@@ -73,6 +73,12 @@ namespace Carvana.MarketExpansion.WebApi.Services
         public bool IsSignatureValid(string jwToken)
         {
             var segments = jwToken.Split('.');
+
+            if (segments.Length != 3)
+            {
+                return false;
+            }
+
             var headerAndPayload = $"{segments[0]}.{segments[1]}";
             var signature = GenerateSignature(headerAndPayload);
 
